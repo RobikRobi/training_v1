@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from app.users.router import app as users_app
-from app.projects.router import app as project_app
 
-app = FastAPI()
+from app.projects.router import router as projects_router
+from app.users.router import router as users_router
 
-app.include_router(users_app)
-app.include_router(project_app)
+app = FastAPI(title="Users & Projects API")
+
+app.include_router(users_router)
+app.include_router(projects_router)
