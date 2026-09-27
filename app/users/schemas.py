@@ -1,28 +1,28 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field
 
 
-class UserCreate(BaseModel):
-    name:str
+class UserBase(BaseModel):
+    name: str
     email: EmailStr
-    age:int
+    age: int = Field(ge=14)
 
-    @field_validator("age")
-    def check_age(cls, age):
-        if age <= 14:
-            raise ValueError("You must be 14 years of age or older")
-        return age
 
-class UserShow(BaseModel):
-    name:str
-    email:EmailStr
-    age:int
+class UserCreate(UserBase):
+    """Тело для POST /users — id генерирует сервер."""
+
 
 class UserUpdate(BaseModel):
-    name:str|None = None
-    email:EmailStr|None = None
-    age:int|None = None
+    """Тело для PUT /users/{user_id}.
 
-class UserSearch(BaseModel):
-    name:str|None = None
-    email:EmailStr|None = None
-    age:int|None = None
+    Все поля опциональны: обновляется только то, что прислали.
+    """
+
+    name: str | None = None
+    email: EmailStr | None = None
+    age: int | None = Field(default=None, ge=14)
+
+
+class UserOut(UserBase):
+    """Ответ пользователя с id."""
+
+    id: int
